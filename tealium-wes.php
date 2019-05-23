@@ -49,7 +49,7 @@ class Tealium_WES {
 
         $utagdata['partner_name'] = esc_html( get_option( 'options_school_short_name' ) );
 
-        if (get_post_type() == "degrees") {
+        if (get_post_type() == "degree") {
           $utagdata['program_name'] = get_post_meta(get_the_ID(),'program_code',true);
         } else {
           $utagdata['program_name'] = esc_html( get_option( 'options_school_short_name' ) ) . "-brand";
