@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.0
+* Version: 1.0.1
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -49,7 +49,7 @@ class Tealium_WES {
 
         $utagdata['partner_name'] = esc_html( get_option( 'options_school_short_name' ) );
 
-        if (get_post_type() == "degree") {
+        if(get_post_meta(get_the_ID(),'program_code',true)) {
           $utagdata['program_name'] = get_post_meta(get_the_ID(),'program_code',true);
         } else {
           $utagdata['program_name'] = esc_html( get_option( 'options_school_short_name' ) ) . "-brand";
