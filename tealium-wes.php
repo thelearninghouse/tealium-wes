@@ -2,11 +2,63 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.1
+* Version: 1.0.2
 * Author: Brent Maggard
 */
 global $Tealium_WES;
 $Tealium_WES = new Tealium_WES;
+
+//create admin page
+add_action('admin_menu', 'tealium_wes_menu');
+
+function tealium_wes_menu(){
+  $page_title = 'Tealium - WES';
+  $menu_title = 'Tealium - WES';
+  $capability = 'manage_options';
+  $menu_slug  = 'tealium-wes';
+  $function   = 'tealium_wes_page';
+  $icon_url   = 'dashicons-media-code';
+  $position   = 40;
+  
+  add_options_page( $page_title,
+                  $menu_title,
+                  $capability,
+                  $menu_slug,
+                  $function,
+                  $icon_url,
+                  $position
+                );
+  
+  add_action( 'admin_init', 'update_tealium_wes' );
+}
+
+function update_tealium_wes() {
+  //School Short Name
+  register_setting( 'tealium-wes-settings', 'school_short_name' );
+}
+
+function tealium_wes_page(){ ?>
+  <div class="wrap" id="tealium-wes">
+        
+    <h1 class="wp-heading-inline">Tealium - WES</h1>
+    
+    <form method="post" action="options.php">
+      <?php settings_fields( 'tealium-wes-settings' ); ?>
+      <?php do_settings_sections( 'tealium-wes-settings' ); ?>
+      <table class="form-table">
+        <tr valign="top">
+          <th scope="row">School Short Name:</th>
+          <td><input type="text" name="school_short_name" value="<?php echo get_option('school_short_name'); ?>"/></td>
+        </tr>
+      </table>
+      <?php submit_button(); ?>
+    </form> 
+
+  </div>  
+  
+
+<?php }
+//end create admin page
 
 class Tealium_WES {
 
@@ -47,12 +99,12 @@ class Tealium_WES {
       		$utagdata['allocadiaid'] = $_GET["tid"];
       	}
 
-        $utagdata['partner_name'] = esc_html( get_option( 'options_school_short_name' ) );
+        $utagdata['partner_name'] = esc_html( get_option( 'school_short_name' ) );
 
         if(get_post_meta(get_the_ID(),'program_code',true)) {
           $utagdata['program_name'] = get_post_meta(get_the_ID(),'program_code',true);
         } else {
-          $utagdata['program_name'] = esc_html( get_option( 'options_school_short_name' ) ) . "-brand";
+          $utagdata['program_name'] = esc_html( get_option( 'school_short_name' ) ) . "-brand";
 
         }
 
@@ -119,3 +171,13 @@ class Tealium_WES {
      add_action( 'tealium_tagCode', 'switchEnvironment' );*/
  }
 }
+
+//setting link
+function tealium_settings_link( $links ) {
+  $settings_link = '<a href="options-general.php?page=tealium-wes">' . __( 'Settings' ) . '</a>';
+  array_push( $links, $settings_link );
+  return $links;
+}
+
+$plugin = plugin_basename( __FILE__ );
+add_filter( "plugin_action_links_$plugin", 'tealium_settings_link' );
