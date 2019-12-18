@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.3
+* Version: 1.0.4
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -132,7 +132,7 @@ class Tealium_WES {
 				$utagdata['page_type']      = 'search';
 				$utagdata['search_keyword'] = $searchQuery;
 				$utagdata['search_results'] = $searchCount;
-			} elseif ( preg_match( '/\/thank-you/', $urlString, $matches ) ) {
+			} elseif ( preg_match( '/thank-you/', $urlString, $matches ) ) {
 				$utagdata['page_type'] = 'thankyou';
 				if ( $_GET['orderid'] ) {
 					$utagdata['order_id'] = $_GET['orderid'];
