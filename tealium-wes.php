@@ -96,7 +96,7 @@ class Tealium_WES {
 			$utagdata['timestamp'] = time();
 
 			//GET allocadiaID FROM URL TID
-			if ( $_GET['tid'] ) {
+			if ( isset($_GET['tid']) && $_GET['tid'] ) {
 				$utagdata['allocadiaid'] = $_GET['tid'];
 			}
 
@@ -115,8 +115,10 @@ class Tealium_WES {
 			$utagdata['search_keyword'] = '';
 			$utagdata['search_results'] = '';
 
-			echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
-
+			if ( isset($utagdata['pageType']) ) {
+				echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
+			}
+			
 			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages' );
 
 			if ( ( is_home() ) || ( is_front_page() ) ) {
@@ -134,13 +136,13 @@ class Tealium_WES {
 				$utagdata['search_results'] = $searchCount;
 			} elseif ( preg_match( '/thank-you/', $urlString, $matches ) ) {
 				$utagdata['page_type'] = 'thankyou';
-				if ( $_GET['orderid'] ) {
+				if ( isset($_GET['orderid']) && $_GET['orderid'] ) {
 					$utagdata['order_id'] = $_GET['orderid'];
 				}
-				if ( $_GET['p'] ) {
+				if ( isset($_GET['p']) && $_GET['p'] ) {
 					$utagdata['program_name'] = $_GET['p'];
 				}
-				if ( $_GET['lid'] ) { #GETS LEAD ID FROM URL LID VARIABLE
+				if ( isset($_GET['lid']) && $_GET['lid'] ) { #GETS LEAD ID FROM URL LID VARIABLE
 					$utagdata['leadID'] = $_GET['lid'];
 				} else { #IF LID NOT PRESENT SEE IF CAN FIND LEAD ID AT END OF URL (LEGACY)
 					if ( preg_match( '/\d{5,100}/', $urlString, $lID ) ) {
