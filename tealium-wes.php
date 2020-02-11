@@ -50,6 +50,7 @@ function tealium_wes_page() {
 				<th scope="row">School Short Name:</th>
 				<td><input type="text" name="school_short_name" value="<?php echo get_option( 'school_short_name' ); ?>"/></td>
 			</tr>
+			
 		</table>
 		<?php submit_button(); ?>
 		</form>
@@ -152,6 +153,8 @@ class Tealium_WES {
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
+			} elseif ( get_post_meta( get_the_ID(), 'page_category', true ) ) { 
+				$utagdata['page_category'] = get_post_meta( get_the_ID(), 'page_category', true );
 			} else {
 				$utagdata['page_type'] = 'content';
 			}
