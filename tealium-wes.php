@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.4
+* Version: 1.0.5
 * Author: Brent Maggard
 */
 global $Tealium_WES;
