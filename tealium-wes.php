@@ -112,6 +112,7 @@ class Tealium_WES {
 			
 			$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
 			
+
 			$utagdata['page_category'] = ''; //Only used is $pageType = landing page
 			$utagdata['page_name']     = get_the_title();
 			//$utagdata['page_section'] = ""; // Removed Do not think it is Used
@@ -155,10 +156,13 @@ class Tealium_WES {
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
-			} elseif ($tealium_page_category && $tealium_page_category !='') {
-				$utagdata['page_category'] = $tealium_page_category; 
-		    } else {
+			}  
+		    else {
 				$utagdata['page_type'] = 'content';
+			}
+			//
+			if ($tealium_page_category && $tealium_page_category !='') {
+				$utagdata['page_category'] = $tealium_page_category;
 			}
 
 		}
