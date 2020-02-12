@@ -107,9 +107,11 @@ class Tealium_WES {
 				$utagdata['program_name'] = get_post_meta( get_the_ID(), 'program_code', true );
 			} else {
 				$utagdata['program_name'] = esc_html( get_option( 'school_short_name' ) ) . '-brand';
-
 			}
 
+			
+			$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
+			
 			$utagdata['page_category'] = ''; //Only used is $pageType = landing page
 			$utagdata['page_name']     = get_the_title();
 			//$utagdata['page_section'] = ""; // Removed Do not think it is Used
@@ -153,15 +155,16 @@ class Tealium_WES {
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
-			} elseif ( get_post_meta( get_the_ID(), 'page_category', true ) ) { 
-				$utagdata['page_category'] = get_post_meta( get_the_ID(), 'page_category', true );
-			} else {
+			} elseif ($tealium_page_category && $tealium_page_category !='') {
+				$utagdata['page_category'] = $tealium_page_category; 
+		    } else {
 				$utagdata['page_type'] = 'content';
 			}
 
 		}
 
 		add_action( 'tealium_addToDataObject', 'addToDataObject' );
+		
 
 		/*
 		* Switch Tealium environment based on website URL
