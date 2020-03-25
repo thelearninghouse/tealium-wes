@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.5
+* Version: 1.0.6
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -36,6 +36,7 @@ function tealium_wes_menu() {
 function update_tealium_wes() {
 	//School Short Name
 	register_setting( 'tealium-wes-settings', 'school_short_name' );
+	register_setting( 'tealium-wes-settings', 'page_category' );
 }
 
 function tealium_wes_page() {
@@ -49,6 +50,10 @@ function tealium_wes_page() {
 			<tr valign="top">
 				<th scope="row">School Short Name:</th>
 				<td><input type="text" name="school_short_name" value="<?php echo get_option( 'school_short_name' ); ?>"/></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row">Page Category:</th>
+				<td><input type="text" name="page_category" value="<?php echo get_option( 'page_category' ); ?>"/></td>
 			</tr>
 			
 		</table>
@@ -109,7 +114,7 @@ class Tealium_WES {
 				$utagdata['program_name'] = esc_html( get_option( 'school_short_name' ) ) . '-brand';
 			}
 
-			
+			//page level value
 			$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
 			
 
@@ -156,11 +161,15 @@ class Tealium_WES {
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
-			}  
-		    else {
+				
+			}   else {
 				$utagdata['page_type'] = 'content';
 			}
-			//
+			//default page_category value
+			if (get_option('page_category')) {
+				$utagdata['page_category'] = get_option('page_category');
+			}
+			//page_category, page level
 			if ($tealium_page_category && $tealium_page_category !='') {
 				$utagdata['page_category'] = $tealium_page_category;
 			}
