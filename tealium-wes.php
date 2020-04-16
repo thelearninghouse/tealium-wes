@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.0.6
+* Version: 1.1
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -36,7 +36,14 @@ function tealium_wes_menu() {
 function update_tealium_wes() {
 	//School Short Name
 	register_setting( 'tealium-wes-settings', 'school_short_name' );
-	register_setting( 'tealium-wes-settings', 'page_category' );
+	//default page category
+	register_setting( 'tealium-wes-settings', 'wes_page_category' );
+	register_setting( 'tealium-wes-settings', 'wes_page_type' );
+	//url based values
+	register_setting( 'tealium-wes-settings', 'wes_page_url' );
+	register_setting( 'tealium-wes-settings', 'wes_program_code_url' );
+	register_setting( 'tealium-wes-settings', 'wes_page_category_url' );
+	register_setting( 'tealium-wes-settings', 'wes_page_type_url' );
 }
 
 function tealium_wes_page() {
@@ -44,17 +51,126 @@ function tealium_wes_page() {
 	<div class="wrap" id="tealium-wes">
 		<h1 class="wp-heading-inline">Tealium - WES</h1>
 		<form method="post" action="options.php">
-		<?php settings_fields( 'tealium-wes-settings' ); ?>
-		<?php do_settings_sections( 'tealium-wes-settings' ); ?>
+		<?php 
+			settings_fields( 'tealium-wes-settings' );
+			do_settings_sections( 'tealium-wes-settings' );
+			$urls = get_option('wes_page_url');
+			$program_codes = get_option('wes_program_code_url');
+			$page_categories = get_option('wes_page_category_url');
+			$page_types = get_option('wes_page_type_url');
+
+			if(!empty($urls) && !empty($program_codes) && !empty($page_categories) && !empty($page_types)) {
+
+				$final = array();
+
+				foreach ($urls as $url => $key) {
+					$final[$key] = array(
+						'url' => $urls[$url],
+						'program'  => $program_codes[$url],
+						'page_category' => $page_categories[$url],
+						'page_type'    => $page_types[$url]
+					);
+				}
+
+			}
+		?>
+
 		<table class="form-table">
+
+			<tr>
+                <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Default Values</strong></th>
+			</tr>
+				
 			<tr valign="top">
 				<th scope="row">School Short Name:</th>
 				<td><input type="text" name="school_short_name" value="<?php echo get_option( 'school_short_name' ); ?>"/></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row">Page Category:</th>
-				<td><input type="text" name="page_category" value="<?php echo get_option( 'page_category' ); ?>"/></td>
+				<th scope="row">Default Page Category:</th>
+				<td><input type="text" name="page_category" value="<?php echo get_option( 'wes_page_category' ); ?>"/></td>
 			</tr>
+			<tr valign="top">
+				<th scope="row">Default Page Type:</th>
+				<td><input type="text" name="page_type" value="<?php echo get_option( 'wes_page_type' ); ?>"/></td>
+			</tr>
+
+			<tr>
+                <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Url Based Values</strong></th>
+			</tr>
+			<tr>
+                <th colspan="4" style=""><small><em>If you need to overwrite the values of the home page, use "/" as URL. thank you, you are the best.</em></small></th>
+			</tr>
+			<tr valign="top">
+				<td>URL</td><td>Program Code</td><td>Page Type</td><td>Page Category</td>
+			</tr>
+			<?php 
+			if (!empty($final)) {
+				foreach ($urls as $url => $key) {
+					echo '<tr class="urls">';
+					echo '<td width="25%"><input type="text" name="page_url[]" value="'.$urls[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="program_code_url[]" value="'.$program_codes[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="page_type_url[]" value="'.$page_types[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>';
+					echo '</tr>';
+				}
+				
+			} else { ?>
+
+			<tr class="urls">
+				<td width="25%"><input type="text" name="page_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="program_code_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="page_type_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="page_category_url[]" value=""/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>
+			</tr>
+
+			<?php } ?>
+			
+			<script type="text/javascript">
+                    jQuery.noConflict();
+                    jQuery(document).ready(function ($) {
+                        function tr_count(){
+                            $count = $('tr.urls').length;
+                            
+                            if($count == 1) {
+                                //console.log('if')
+                                $('.kill-id').attr('disabled', 'disabled').css('opacity', '0.375');
+                            } else {
+                                $('.kill-id').removeAttr('disabled', 'disabled').css('opacity', '1');
+                            }
+                            
+                        }
+
+                        function clone(){
+                            $('.add-id').click(function(){
+                                $parent = $(this).parents('tr');
+
+                                $parent.clone(true).addClass('cloned').find("input:text").val("").end().insertAfter($parent);
+                                tr_count()
+
+                                return false;
+                            })
+                        }
+                        
+                        function kill(){
+                            $('.kill-id').click(function(){
+                                $parent = $(this).parents('tr');
+
+                                $parent.find("input:text").val("");
+                                $parent.remove();
+
+                                tr_count()
+                                
+                                return false;
+                            })
+                        }
+
+                        tr_count();
+                        clone(); 
+                        kill(); 
+                    });
+                </script>
+			
+
 			
 		</table>
 		<?php submit_button(); ?>
@@ -106,29 +222,57 @@ class Tealium_WES {
 				$utagdata['allocadiaid'] = $_GET['tid'];
 			}
 
-			$utagdata['partner_name'] = esc_html( get_option( 'school_short_name' ) );
+			//
+			//VARS
+			//
+			//partner name value from plugin settings
+			$partner_name = esc_html( get_option( 'school_short_name' ) );
+			//default page category from plugin settings
+			$page_category = esc_html( get_option( 'wes_page_category' ) );
+			//default page category from plugin settings
+			$page_type = esc_html( get_option( 'wes_page_type' ) );
+			//landing pages post types
+			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages' );
+			//program value from posts field
+			$program_name = get_post_meta( get_the_ID(), 'program_code', true );
+			//url based values
+			$urls = get_option('wes_page_url');
+			$program_codes = get_option('wes_program_code_url');
+			$page_categories = get_option('wes_page_category_url');
+			$page_types = get_option('wes_page_type_url');
 
-			if ( get_post_meta( get_the_ID(), 'program_code', true ) ) {
-				$utagdata['program_name'] = get_post_meta( get_the_ID(), 'program_code', true );
-			} else {
-				$utagdata['program_name'] = esc_html( get_option( 'school_short_name' ) ) . '-brand';
+			if(!empty($urls) && !empty($program_codes) && !empty($page_categories) && !empty($page_types)) {
+
+				$final = array();
+
+				foreach ($urls as $url => $key) {
+					$final[$key] = array(
+						'url' => $urls[$url],
+						'program'  => $program_codes[$url],
+						'page_category' => $page_categories[$url],
+						'page_type'    => $page_types[$url]
+					);
+				}
 			}
-
-			//page level value
-			$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
 			
+			//page category at page level
+			//$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
 
+			//
+			//UTAG DATA
+			//
+			$utagdata['partner_name'] = $partner_name;
 			$utagdata['page_category'] = ''; //Only used is $pageType = landing page
 			$utagdata['page_name']     = get_the_title();
+			//if no program set in post, load default value
+			if ( $program_name ) {
+				$utagdata['program_name'] = $program_name;
+			} else {
+				$utagdata['program_name'] = $partner_name . '-brand';
+			}
 			//$utagdata['page_section'] = ""; // Removed Do not think it is Used
 			$utagdata['search_keyword'] = '';
 			$utagdata['search_results'] = '';
-
-			if ( isset($utagdata['pageType']) ) {
-				echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
-			}
-			
-			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages' );
 
 			if ( ( is_home() ) || ( is_front_page() ) ) {
 				$utagdata['page_type'] = 'home';
@@ -158,20 +302,56 @@ class Tealium_WES {
 						$utagdata['leadID'] = $lID[0];
 					}
 				}
+				if ( isset($_GET['lp']) && $_GET['lp'] === 'true' ) {
+					$utagdata['page_category'] = 'Landing Page';
+				}
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
 				
 			}   else {
-				$utagdata['page_type'] = 'content';
+				//set default value if not
+				//home || search || thanks page || LP content type
+				//default page_type value from plugin
+				if ($page_type) {
+					$utagdata['page_type'] = $page_type;
+				} else {
+					//if nothing is set as default
+					//then load a default value
+					$utagdata['page_type'] = 'content';
+				}
+				//default page_category value from plugin
+				if ($page_category) {
+					$utagdata['page_category'] = $page_category;
+				}
+				//
 			}
-			//default page_category value
-			if (get_option('page_category')) {
-				$utagdata['page_category'] = get_option('page_category');
+
+			//urls based content
+			if (!empty($final)) {
+				$current_url = strtok($_SERVER["REQUEST_URI"], '?');
+				if($current_url != '/') {
+					$current_url = substr($current_url, 1, -1);
+				}
+				foreach ($urls as $url => $key) {
+
+					if($urls[$url] == $current_url) {
+						//echo 'is';
+						if($page_types[$url] !=''){
+							$utagdata['page_type'] = $page_types[$url];
+						}
+						if($page_categories[$url] !=''){
+							$utagdata['page_category'] = $page_categories[$url];
+						}
+						if($program_codes[$url] !='') {
+							$utagdata['program_name'] = $program_codes[$url];
+						}
+					} 
+				}
 			}
-			//page_category, page level
-			if ($tealium_page_category && $tealium_page_category !='') {
-				$utagdata['page_category'] = $tealium_page_category;
+			
+			if ( isset($utagdata['pageType']) && is_user_logged_in()) {
+				echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
 			}
 
 		}
