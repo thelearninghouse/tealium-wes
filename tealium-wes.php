@@ -232,7 +232,7 @@ class Tealium_WES {
 			//default page category from plugin settings
 			$page_type = esc_html( get_option( 'wes_page_type' ) );
 			//landing pages post types
-			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages' );
+			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages', 'landing-pages-new' );
 			//program value from posts field
 			$program_name = get_post_meta( get_the_ID(), 'program_code', true );
 			//url based values
