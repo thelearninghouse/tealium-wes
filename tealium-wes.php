@@ -107,20 +107,20 @@ function tealium_wes_page() {
 			if (!empty($final)) {
 				foreach ($urls as $url => $key) {
 					echo '<tr class="urls">';
-					echo '<td width="25%"><input type="text" name="page_url[]" value="'.$urls[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="program_code_url[]" value="'.$program_codes[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="page_type_url[]" value="'.$page_types[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>';
+					echo '<td width="25%"><input type="text" name="wes_page_url[]" value="'.$urls[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="wes_program_code_url[]" value="'.$program_codes[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="wes_page_type_url[]" value="'.$page_types[$url].'"/></td>';
+					echo '<td width="25%"><input type="text" name="wes_page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>';
 					echo '</tr>';
 				}
 				
 			} else { ?>
 
 			<tr class="urls">
-				<td width="25%"><input type="text" name="page_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="program_code_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="page_type_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="page_category_url[]" value=""/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>
+				<td width="25%"><input type="text" name="wes_page_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="wes_program_code_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="wes_page_type_url[]" value=""/></td>
+				<td width="25%"><input type="text" name="wes_page_category_url[]" value=""/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>
 			</tr>
 
 			<?php } ?>
