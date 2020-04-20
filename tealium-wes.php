@@ -1,8 +1,8 @@
 <?php
 /**
 * Plugin Name: Tealium - WES
-* Description: Tealium Plugin Extension adds standard datalayer values
-* Version: 1.1
+* Description: Tealium Plugin Extension adds standard datalayer values. Sitewide values, custom values with urls + wildcards
+* Version: 1.1.1
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -330,23 +330,57 @@ class Tealium_WES {
 			//urls based content
 			if (!empty($final)) {
 				$current_url = strtok($_SERVER["REQUEST_URI"], '?');
+
+				function startsWith ($string, $startString) 
+				{ 
+					$len = strlen($startString); 
+					return (substr($string, 0, $len) === $startString); 
+				} 
+
+				function endsWith($string, $endString) 
+				{ 
+					$len = strlen($endString); 
+					if ($len == 0) { 
+						return true; 
+					} 
+					return (substr($string, -$len) === $endString); 
+				}  
+
 				if($current_url != '/') {
 					$current_url = substr($current_url, 1, -1);
 				}
+
 				foreach ($urls as $url => $key) {
 
 					if($urls[$url] == $current_url) {
-						//echo 'is';
 						if($page_types[$url] !=''){
 							$utagdata['page_type'] = $page_types[$url];
+							$type = true;
 						}
 						if($page_categories[$url] !=''){
 							$utagdata['page_category'] = $page_categories[$url];
+							$cat = true;
 						}
 						if($program_codes[$url] !='') {
 							$utagdata['program_name'] = $program_codes[$url];
+							$code = true;
 						}
 					} 
+
+					if(endsWith($urls[$url], '*')) {
+						$urls[$url] = substr($urls[$url], 0, -2);
+						if(startsWith ($current_url, $urls[$url])) {
+							if($page_types[$url] !='' && $type!=true){
+								$utagdata['page_type'] = $page_types[$url];
+							}
+							if($page_categories[$url] !='' && $cat!=true){
+								$utagdata['page_category'] = $page_categories[$url];
+							}
+							if($program_codes[$url] !='' && $code!=true) {
+								$utagdata['program_name'] = $program_codes[$url];
+							}
+						}
+					}
 				}
 			}
 			
