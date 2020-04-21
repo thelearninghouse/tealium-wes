@@ -34,9 +34,8 @@ function tealium_wes_menu() {
 }
 
 function update_tealium_wes() {
-	//School Short Name
-	register_setting( 'tealium-wes-settings', 'school_short_name' );
-	//default page category
+	//default values
+	register_setting( 'tealium-wes-settings', 'wes_program_code' );
 	register_setting( 'tealium-wes-settings', 'wes_page_category' );
 	register_setting( 'tealium-wes-settings', 'wes_page_type' );
 	//url based values
@@ -51,7 +50,7 @@ function tealium_wes_page() {
 	<div class="wrap" id="tealium-wes">
 		<h1 class="wp-heading-inline">Tealium - WES</h1>
 		<form method="post" action="options.php">
-		<?php 
+		<?php
 			settings_fields( 'tealium-wes-settings' );
 			do_settings_sections( 'tealium-wes-settings' );
 			$urls = get_option('wes_page_url');
@@ -78,32 +77,53 @@ function tealium_wes_page() {
 		<table class="form-table">
 
 			<tr>
-                <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Default Values</strong></th>
-			</tr>
-				
-			<tr valign="top">
-				<th scope="row">School Short Name:</th>
-				<td><input type="text" name="school_short_name" value="<?php echo get_option( 'school_short_name' ); ?>"/></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row">Default Page Category:</th>
-				<td><input type="text" name="page_category" value="<?php echo get_option( 'wes_page_category' ); ?>"/></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row">Default Page Type:</th>
-				<td><input type="text" name="page_type" value="<?php echo get_option( 'wes_page_type' ); ?>"/></td>
+        <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Default Values</strong></th>
 			</tr>
 
 			<tr>
-                <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Url Based Values</strong></th>
+      	<th colspan="4" style="">
+					<ul style="margin:0;list-style: inside;margin-left:20px">
+						<li><small><em>Default values applies sitewide except for:</em></small>
+							<ul style="margin:5px 0;list-style: inside;margin-left:20px">
+								<li><small><em>Home Page: 'page_type' is set to be 'home'</em></small></li>
+								<li><small><em>Landing Page Post Type: 'page_type' and 'page_category' are set to be 'Landing Page'</em></small></li>
+								<li><small><em>Search Results Page: 'page_type', 'search_keyword' and 'search_results' have default search specific values</em></small></li>
+								<li><small><em>Thank You Page: 'page_category' is set to 'Landing Page', if the lead come from a LP page</em></small></li>
+							</ul>
+						</li>
+					</ul>
+				</th>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row">Default Program Code:</th>
+				<td><input type="text" name="wes_program_code" value="<?php echo get_option( 'wes_program_code' ); ?>"/></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row">Default Page Category:</th>
+				<td><input type="text" name="wes_page_category" value="<?php echo get_option( 'wes_page_category' ); ?>"/></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row">Default Page Type:</th>
+				<td><input type="text" name="wes_page_type" value="<?php echo get_option( 'wes_page_type' ); ?>"/></td>
+			</tr>
+
+			<tr>
+	      <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Url Based Values</strong></th>
 			</tr>
 			<tr>
-                <th colspan="4" style=""><small><em>If you need to overwrite the values of the home page, use "/" as URL. thank you, you are the best.</em></small></th>
+      	<th colspan="4" style="">
+					<ul style="margin:0;list-style: inside;margin-left:20px">
+						<li><small><em>If you need to overwrite the values of the home page, use "/" as URL.</em></small></li>
+						<li><small><em>For any other page, you don't need to add a "/" at the beginning or the end, in the URL field</em></small></li>
+						<li><small><em>You can use a wildcard "/*" at the end, that will fire the values in any child-page and in the parent page too</em></small></li>
+					</ul>
+				</th>
 			</tr>
 			<tr valign="top">
 				<td>URL</td><td>Program Code</td><td>Page Type</td><td>Page Category</td>
 			</tr>
-			<?php 
+			<?php
 			if (!empty($final)) {
 				foreach ($urls as $url => $key) {
 					echo '<tr class="urls">';
@@ -113,7 +133,7 @@ function tealium_wes_page() {
 					echo '<td width="25%"><input type="text" name="wes_page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>';
 					echo '</tr>';
 				}
-				
+
 			} else { ?>
 
 			<tr class="urls">
@@ -124,20 +144,20 @@ function tealium_wes_page() {
 			</tr>
 
 			<?php } ?>
-			
+
 			<script type="text/javascript">
                     jQuery.noConflict();
                     jQuery(document).ready(function ($) {
                         function tr_count(){
                             $count = $('tr.urls').length;
-                            
+
                             if($count == 1) {
                                 //console.log('if')
                                 $('.kill-id').attr('disabled', 'disabled').css('opacity', '0.375');
                             } else {
                                 $('.kill-id').removeAttr('disabled', 'disabled').css('opacity', '1');
                             }
-                            
+
                         }
 
                         function clone(){
@@ -150,7 +170,7 @@ function tealium_wes_page() {
                                 return false;
                             })
                         }
-                        
+
                         function kill(){
                             $('.kill-id').click(function(){
                                 $parent = $(this).parents('tr');
@@ -159,19 +179,19 @@ function tealium_wes_page() {
                                 $parent.remove();
 
                                 tr_count()
-                                
+
                                 return false;
                             })
                         }
 
                         tr_count();
-                        clone(); 
-                        kill(); 
+                        clone();
+                        kill();
                     });
                 </script>
-			
 
-			
+
+
 		</table>
 		<?php submit_button(); ?>
 		</form>
@@ -226,15 +246,17 @@ class Tealium_WES {
 			//VARS
 			//
 			//partner name value from plugin settings
-			$partner_name = esc_html( get_option( 'school_short_name' ) );
+			$partner_name = get_option( 'tealiumProfile' );
+			//default program code
+			$program_code = esc_html( get_option( 'wes_program_code' ) );
 			//default page category from plugin settings
 			$page_category = esc_html( get_option( 'wes_page_category' ) );
 			//default page category from plugin settings
 			$page_type = esc_html( get_option( 'wes_page_type' ) );
 			//landing pages post types
 			$lp_post_types = array( 'landing-pages', 'landing-page', 'grp_pages', 'landing-pages-new' );
-			//program value from posts field
-			$program_name = get_post_meta( get_the_ID(), 'program_code', true );
+			//program code from posts field
+			$program_code_post = get_post_meta( get_the_ID(), 'program_code', true );
 			//url based values
 			$urls = get_option('wes_page_url');
 			$program_codes = get_option('wes_program_code_url');
@@ -254,40 +276,47 @@ class Tealium_WES {
 					);
 				}
 			}
-			
-			//page category at page level
-			//$tealium_page_category = get_post_meta( get_the_ID(), 'tealium_page_category', true );
-
 			//
 			//UTAG DATA
 			//
 			$utagdata['partner_name'] = $partner_name;
 			$utagdata['page_category'] = ''; //Only used is $pageType = landing page
 			$utagdata['page_name']     = get_the_title();
-			//if no program set in post, load default value
-			if ( $program_name ) {
-				$utagdata['program_name'] = $program_name;
+
+			//if no program set in post, load default value from admin, then build a default value
+			if ( $program_code_post ) {
+				$utagdata['program_name'] = $program_code_post;
+			} elseif ($program_code){
+				$utagdata['program_name'] = $program_code;
 			} else {
 				$utagdata['program_name'] = $partner_name . '-brand';
 			}
+
 			//$utagdata['page_section'] = ""; // Removed Do not think it is Used
 			$utagdata['search_keyword'] = '';
 			$utagdata['search_results'] = '';
 
 			if ( ( is_home() ) || ( is_front_page() ) ) {
-				$utagdata['page_type'] = 'home';
-			} elseif ( is_search() ) {
-				global $wp_query;
 
+				$utagdata['page_type'] = 'home';
+				//default page_category value from plugin
+				if ($page_category) {
+					$utagdata['page_category'] = $page_category;
+				}
+
+			} elseif ( is_search() ) {
+
+				global $wp_query;
 				// Collect search and result data
 				$searchQuery = get_search_query();
 				$searchCount = $wp_query->found_posts;
-
 				// Add to udo
 				$utagdata['page_type']      = 'search';
 				$utagdata['search_keyword'] = $searchQuery;
 				$utagdata['search_results'] = $searchCount;
+
 			} elseif ( preg_match( '/thank-you/', $urlString, $matches ) ) {
+
 				$utagdata['page_type'] = 'thankyou';
 				if ( isset($_GET['orderid']) && $_GET['orderid'] ) {
 					$utagdata['order_id'] = $_GET['orderid'];
@@ -305,11 +334,13 @@ class Tealium_WES {
 				if ( isset($_GET['lp']) && $_GET['lp'] === 'true' ) {
 					$utagdata['page_category'] = 'Landing Page';
 				}
+
 			} elseif ( in_array( $utagdata['pageType'], $lp_post_types ) ) {
+
 				$utagdata['page_type']     = 'Landing Page';
 				$utagdata['page_category'] = 'Landing Page';
-				
-			}   else {
+
+			}  else {
 				//set default value if not
 				//home || search || thanks page || LP content type
 				//default page_type value from plugin
@@ -329,23 +360,24 @@ class Tealium_WES {
 
 			//urls based content
 			if (!empty($final)) {
+				//get current page url
 				$current_url = strtok($_SERVER["REQUEST_URI"], '?');
 
-				function startsWith ($string, $startString) 
-				{ 
-					$len = strlen($startString); 
-					return (substr($string, 0, $len) === $startString); 
-				} 
+				function startsWith ($string, $startString) {
+					$len = strlen($startString);
+					return (substr($string, 0, $len) === $startString);
+				}
 
-				function endsWith($string, $endString) 
-				{ 
-					$len = strlen($endString); 
-					if ($len == 0) { 
-						return true; 
-					} 
-					return (substr($string, -$len) === $endString); 
-				}  
+				function endsWith($string, $endString) {
+					$len = strlen($endString);
+					if ($len == 0) {
+						return true;
+					}
+					return (substr($string, -$len) === $endString);
+				}
 
+				//remove first and last '/'
+				//if not homepage
 				if($current_url != '/') {
 					$current_url = substr($current_url, 1, -1);
 				}
@@ -365,10 +397,15 @@ class Tealium_WES {
 							$utagdata['program_name'] = $program_codes[$url];
 							$code = true;
 						}
-					} 
-
-					if(endsWith($urls[$url], '*')) {
+					}
+					//wildcard
+					if(endsWith($urls[$url], '/*')) {
+						//remove /* from url value
+						//to make it work with child pages and parent page
 						$urls[$url] = substr($urls[$url], 0, -2);
+						//if current url start with wilddcard value, then
+						//load default value if no specific value is already set
+						//type, cat an code flags
 						if(startsWith ($current_url, $urls[$url])) {
 							if($page_types[$url] !='' && $type!=true){
 								$utagdata['page_type'] = $page_types[$url];
@@ -383,7 +420,7 @@ class Tealium_WES {
 					}
 				}
 			}
-			
+
 			if ( isset($utagdata['pageType']) && is_user_logged_in()) {
 				echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
 			}
@@ -391,7 +428,7 @@ class Tealium_WES {
 		}
 
 		add_action( 'tealium_addToDataObject', 'addToDataObject' );
-		
+
 
 		/*
 		* Switch Tealium environment based on website URL
