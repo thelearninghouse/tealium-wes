@@ -228,6 +228,19 @@ class Tealium_WES {
 			return;
 		}
 
+		function wes_startsWith ($string, $startString) {
+			$len = strlen($startString);
+			return (substr($string, 0, $len) === $startString);
+		}
+
+		function wes_endsWith($string, $endString) {
+			$len = strlen($endString);
+			if ($len == 0) {
+				return true;
+			}
+			return (substr($string, -$len) === $endString);
+		}
+		
 		function addToDataObject() {
 			global $utagdata;
 
@@ -363,18 +376,7 @@ class Tealium_WES {
 				//get current page url
 				$current_url = strtok($_SERVER["REQUEST_URI"], '?');
 
-				function wes_startsWith ($string, $startString) {
-					$len = strlen($startString);
-					return (substr($string, 0, $len) === $startString);
-				}
 
-				function wes_endsWith($string, $endString) {
-					$len = strlen($endString);
-					if ($len == 0) {
-						return true;
-					}
-					return (substr($string, -$len) === $endString);
-				}
 
 				//remove first and last '/'
 				//if not homepage
