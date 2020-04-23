@@ -363,12 +363,12 @@ class Tealium_WES {
 				//get current page url
 				$current_url = strtok($_SERVER["REQUEST_URI"], '?');
 
-				function startsWith ($string, $startString) {
+				function wes_startsWith ($string, $startString) {
 					$len = strlen($startString);
 					return (substr($string, 0, $len) === $startString);
 				}
 
-				function endsWith($string, $endString) {
+				function wes_endsWith($string, $endString) {
 					$len = strlen($endString);
 					if ($len == 0) {
 						return true;
@@ -399,14 +399,14 @@ class Tealium_WES {
 						}
 					}
 					//wildcard
-					if(endsWith($urls[$url], '/*')) {
+					if(wes_endsWith($urls[$url], '/*')) {
 						//remove /* from url value
 						//to make it work with child pages and parent page
 						$urls[$url] = substr($urls[$url], 0, -2);
 						//if current url start with wilddcard value, then
 						//load default value if no specific value is already set
 						//type, cat an code flags
-						if(startsWith ($current_url, $urls[$url])) {
+						if(wes_startsWith ($current_url, $urls[$url])) {
 							if($page_types[$url] !='' && $type!=true){
 								$utagdata['page_type'] = $page_types[$url];
 							}
