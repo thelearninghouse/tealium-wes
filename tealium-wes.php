@@ -240,7 +240,7 @@ class Tealium_WES {
 			}
 			return (substr($string, -$len) === $endString);
 		}
-		
+
 		function addToDataObject() {
 			global $utagdata;
 
@@ -328,7 +328,7 @@ class Tealium_WES {
 				$utagdata['search_keyword'] = $searchQuery;
 				$utagdata['search_results'] = $searchCount;
 
-			} elseif ( preg_match( '/thank-you/', $urlString, $matches ) ) {
+			} elseif ( preg_match( '/thank-you/', $urlString, $matches ) || preg_match( '/thanks/', $urlString, $matches ) ) {
 
 				$utagdata['page_type'] = 'thankyou';
 				if ( isset($_GET['orderid']) && $_GET['orderid'] ) {
