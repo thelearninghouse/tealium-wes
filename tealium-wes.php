@@ -423,6 +423,11 @@ class Tealium_WES {
 				}
 			}
 
+			if (isset($utagdata['page_category']) && $utagdata['page_category'] == 'Landing Page') {
+				echo "<script>if(window.isLandingPage != true){window.isLandingPage = true}</script>";
+			}
+
+
 			if ( isset($utagdata['pageType']) && is_user_logged_in()) {
 				echo "<script>console.log( 'Debug Objects: " . $utagdata['pageType'] . "' );</script>";
 			}
