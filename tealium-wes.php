@@ -9,8 +9,6 @@ global $Tealium_WES;
 $Tealium_WES = new Tealium_WES;
 
 //create admin page
-add_action( 'admin_menu', 'tealium_wes_menu' );
-
 function tealium_wes_menu() {
 	$page_title = 'Tealium - WES';
 	$menu_title = 'Tealium - WES';
@@ -18,20 +16,14 @@ function tealium_wes_menu() {
 	$menu_slug  = 'tealium-wes';
 	$function   = 'tealium_wes_page';
 	$icon_url   = 'dashicons-media-code';
-	$position   = 40;
+	$position   = 50;
 
-	add_options_page(
-		$page_title,
-		$menu_title,
-		$capability,
-		$menu_slug,
-		$function,
-		$icon_url,
-		$position
-	);
+	add_options_page($page_title,$menu_title,$capability,$menu_slug,$function,$position);
 
 	add_action( 'admin_init', 'update_tealium_wes' );
 }
+
+add_action( 'admin_menu', 'tealium_wes_menu' );
 
 function update_tealium_wes() {
 	//default values
