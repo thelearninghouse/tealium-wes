@@ -411,8 +411,12 @@ class Tealium_WES {
 							$utagdata['page_category'] = $page_categories[$url];
 							$cat = true;
 						}
+						if($program_names[$url] !='') {
+							$utagdata['program_name'] = $program_names[$url];
+							$name = true;
+						}
 						if($program_codes[$url] !='') {
-							$utagdata['program_name'] = $program_codes[$url];
+							$utagdata['program_code'] = $program_codes[$url];
 							$code = true;
 						}
 					}
@@ -431,8 +435,11 @@ class Tealium_WES {
 							if($page_categories[$url] !='' && $cat!=true){
 								$utagdata['page_category'] = $page_categories[$url];
 							}
+							if($program_names[$url] !='' && $name!=true) {
+								$utagdata['program_name'] = $program_names[$url];
+							}
 							if($program_codes[$url] !='' && $code!=true) {
-								$utagdata['program_name'] = $program_codes[$url];
+								$utagdata['program_code'] = $program_codes[$url];
 							}
 						}
 					}
