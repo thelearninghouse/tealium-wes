@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Tealium - WES
 * Description: Tealium Plugin Extension adds standard datalayer values. Sitewide values, custom values with urls + wildcards
-* Version: 1.1.1
+* Version: 1.1.2
 * Author: Brent Maggard
 */
 global $Tealium_WES;
@@ -27,12 +27,14 @@ add_action( 'admin_menu', 'tealium_wes_menu' );
 
 function update_tealium_wes() {
 	//default values
+	register_setting( 'tealium-wes-settings', 'wes_program_name' );
 	register_setting( 'tealium-wes-settings', 'wes_program_code' );
 	register_setting( 'tealium-wes-settings', 'wes_page_category' );
 	register_setting( 'tealium-wes-settings', 'wes_page_type' );
 	//url based values
 	register_setting( 'tealium-wes-settings', 'wes_page_url' );
 	register_setting( 'tealium-wes-settings', 'wes_program_code_url' );
+	register_setting( 'tealium-wes-settings', 'wes_program_name_url' );
 	register_setting( 'tealium-wes-settings', 'wes_page_category_url' );
 	register_setting( 'tealium-wes-settings', 'wes_page_type_url' );
 }
@@ -47,17 +49,19 @@ function tealium_wes_page() {
 			do_settings_sections( 'tealium-wes-settings' );
 			$urls = get_option('wes_page_url');
 			$program_codes = get_option('wes_program_code_url');
+			$program_names = get_option('wes_program_name_url');
 			$page_categories = get_option('wes_page_category_url');
 			$page_types = get_option('wes_page_type_url');
 
-			if(!empty($urls) && !empty($program_codes) && !empty($page_categories) && !empty($page_types)) {
+			if(!empty($urls) && !empty($program_codes)) {
 
 				$final = array();
 
 				foreach ($urls as $url => $key) {
 					$final[$key] = array(
 						'url' => $urls[$url],
-						'program'  => $program_codes[$url],
+						'code'  => $program_codes[$url],
+						'name'  => $program_names[$url],
 						'page_category' => $page_categories[$url],
 						'page_type'    => $page_types[$url]
 					);
@@ -69,11 +73,11 @@ function tealium_wes_page() {
 		<table class="form-table">
 
 			<tr>
-        <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Default Values</strong></th>
+        <th colspan="5" style="background:#23282d;padding:10px;color:#fff"><strong>Default Values</strong></th>
 			</tr>
 
 			<tr>
-      	<th colspan="4" style="">
+      	<th colspan="5" style="">
 					<ul style="margin:0;list-style: inside;margin-left:20px">
 						<li><small><em>Default values applies sitewide except for:</em></small>
 							<ul style="margin:5px 0;list-style: inside;margin-left:20px">
@@ -88,6 +92,10 @@ function tealium_wes_page() {
 			</tr>
 
 			<tr valign="top">
+				<th scope="row">Default Program Name:</th>
+				<td><input type="text" name="wes_program_name" value="<?php echo get_option( 'wes_program_name' ); ?>"/></td>
+			</tr>
+			<tr valign="top">
 				<th scope="row">Default Program Code:</th>
 				<td><input type="text" name="wes_program_code" value="<?php echo get_option( 'wes_program_code' ); ?>"/></td>
 			</tr>
@@ -101,10 +109,10 @@ function tealium_wes_page() {
 			</tr>
 
 			<tr>
-	      <th colspan="4" style="background:#23282d;padding:10px;color:#fff"><strong>Url Based Values</strong></th>
+	      <th colspan="5" style="background:#23282d;padding:10px;color:#fff"><strong>Url Based Values</strong></th>
 			</tr>
 			<tr>
-      	<th colspan="4" style="">
+      	<th colspan="5" style="">
 					<ul style="margin:0;list-style: inside;margin-left:20px">
 						<li><small><em>If you need to overwrite the values of the home page, use "/" as URL.</em></small></li>
 						<li><small><em>For any other page, you don't need to add a "/" at the beginning or the end, in the URL field</em></small></li>
@@ -113,26 +121,28 @@ function tealium_wes_page() {
 				</th>
 			</tr>
 			<tr valign="top">
-				<td>URL</td><td>Program Code</td><td>Page Type</td><td>Page Category</td>
+				<td>URL</td><td>Program Name</td><td>Program Code</td><td>Page Type</td><td>Page Category</td>
 			</tr>
 			<?php
 			if (!empty($final)) {
 				foreach ($urls as $url => $key) {
 					echo '<tr class="urls">';
-					echo '<td width="25%"><input type="text" name="wes_page_url[]" value="'.$urls[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="wes_program_code_url[]" value="'.$program_codes[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="wes_page_type_url[]" value="'.$page_types[$url].'"/></td>';
-					echo '<td width="25%"><input type="text" name="wes_page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>';
+					echo '<td width="18%"><input type="text" name="wes_page_url[]" value="'.$urls[$url].'"/></td>';
+					echo '<td width="18%"><input type="text" name="wes_program_name_url[]" value="'.$program_names[$url].'"/></td>';
+					echo '<td width="18%"><input type="text" name="wes_program_code_url[]" value="'.$program_codes[$url].'"/></td>';
+					echo '<td width="18%"><input type="text" name="wes_page_type_url[]" value="'.$page_types[$url].'"/></td>';
+					echo '<td width="28%"><input type="text" name="wes_page_category_url[]" value="'.$page_categories[$url].'"/> <button class="add-id">+</button><button class="kill-id">-</button></td>';
 					echo '</tr>';
 				}
 
 			} else { ?>
 
 			<tr class="urls">
-				<td width="25%"><input type="text" name="wes_page_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="wes_program_code_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="wes_page_type_url[]" value=""/></td>
-				<td width="25%"><input type="text" name="wes_page_category_url[]" value=""/> <button class="add-id">+</button><button class="kill-id">-</button></div></td>
+				<td width="18%"><input type="text" name="wes_page_url[]" value=""/></td>
+				<td width="18%"><input type="text" name="wes_program_name_url[]" value=""/></td>
+				<td width="18%"><input type="text" name="wes_program_code_url[]" value=""/></td>
+				<td width="18%"><input type="text" name="wes_page_type_url[]" value=""/></td>
+				<td width="28%"><input type="text" name="wes_page_category_url[]" value=""/> <button class="add-id">+</button><button class="kill-id">-</button></td>
 			</tr>
 
 			<?php } ?>
@@ -252,6 +262,8 @@ class Tealium_WES {
 			//
 			//partner name value from plugin settings
 			$partner_name = get_option( 'tealiumProfile' );
+			//default program name
+			$program_name = esc_html( get_option( 'wes_program_name' ) );
 			//default program code
 			$program_code = esc_html( get_option( 'wes_program_code' ) );
 			//default page category from plugin settings
@@ -264,6 +276,7 @@ class Tealium_WES {
 			$program_code_post = get_post_meta( get_the_ID(), 'program_code', true );
 			//url based values
 			$urls = get_option('wes_page_url');
+			$program_names = get_option('wes_program_name_url');
 			$program_codes = get_option('wes_program_code_url');
 			$page_categories = get_option('wes_page_category_url');
 			$page_types = get_option('wes_page_type_url');
@@ -275,7 +288,8 @@ class Tealium_WES {
 				foreach ($urls as $url => $key) {
 					$final[$key] = array(
 						'url' => $urls[$url],
-						'program'  => $program_codes[$url],
+						'name'  => $program_names[$url],
+						'code'  => $program_codes[$url],
 						'page_category' => $page_categories[$url],
 						'page_type'    => $page_types[$url]
 					);
@@ -291,10 +305,19 @@ class Tealium_WES {
 			//if no program set in post, load default value from admin, then build a default value
 			if ( $program_code_post ) {
 				$utagdata['program_name'] = $program_code_post;
-			} elseif ($program_code){
-				$utagdata['program_name'] = $program_code;
+			} elseif ($program_name){
+				$utagdata['program_name'] = $program_name;
 			} else {
 				$utagdata['program_name'] = $partner_name . '-brand';
+			}
+
+			//program code
+			if ( $program_code_post ) {
+				$utagdata['program_code'] = $program_code_post;
+			} elseif ($program_code){
+				$utagdata['program_code'] = $program_code;
+			} else {
+				$utagdata['program_code'] = $partner_name . '-brand';
 			}
 
 			//$utagdata['page_section'] = ""; // Removed Do not think it is Used
@@ -328,6 +351,7 @@ class Tealium_WES {
 				}
 				if ( isset($_GET['p']) && $_GET['p'] ) {
 					$utagdata['program_name'] = $_GET['p'];
+					$utagdata['program_code'] = $_GET['p'];
 				}
 				if ( isset($_GET['lid']) && $_GET['lid'] ) { #GETS LEAD ID FROM URL LID VARIABLE
 					$utagdata['leadID'] = $_GET['lid'];
